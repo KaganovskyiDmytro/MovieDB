@@ -13,4 +13,9 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search">Search</string>
+    <string name="share">Share</string>
+    <string name="sort">Sort</string>
+    <string name="by_rating">by rating</string>
+    <string name="by_popularity">by popularity</string>
 </resources>

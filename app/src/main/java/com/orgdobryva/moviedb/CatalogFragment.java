@@ -3,16 +3,12 @@ package com.orgdobryva.moviedb;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -20,116 +16,137 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class CatalogFragment extends Fragment {
 
-    private final String MOVIEDB_DISCOVER_MOVIE_URL = "http://api.themoviedb.org/3/movie/top_rated?";
+    private final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private final String MOVIE_URL_TOP_RATED = "top_rated";
+    private final String MOVIE_URL_POPULAR = "popular";
+
+    private String selectedOption = MOVIE_URL_TOP_RATED;
+
     private final String APPID_PARAM = "api_key";
     private final String PAGE_NUMBER_PARAM = "page";
 
+    private List<DownloaderTask> mDownloaderTasks;
+
     private List<Bundle> filmBundles;
-    private List<Bundle> genreBundeles;
-    private PosterViewAdapter posterViewAdapter;
-    private ArrayAdapter<Bundle> mGenreArrayAdapter;
+    private NewPosterViewAdapter posterViewAdapter;
+
 
     public CatalogFragment() {
         this.filmBundles = new ArrayList<>();
-        this.genreBundeles = new ArrayList<>();
+        this.mDownloaderTasks = Collections.synchronizedList(new ArrayList<DownloaderTask>());
+    }
+
+    public void sortByRating() {
+
+        selectedOption = MOVIE_URL_TOP_RATED;
+        retrievePages();
+
+    }
+
+    public void sortByPopular() {
+
+        selectedOption = MOVIE_URL_POPULAR;
+        retrievePages();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.video_catalog, container, false);
 
-        retrievePages();
+        this.posterViewAdapter = new NewPosterViewAdapter(getContext(), filmBundles);
 
-        this.posterViewAdapter = new PosterViewAdapter(getContext(), filmBundles);
+        retrievePages();
 
         GridView gridView = (GridView) layout.findViewById(R.id.catalogGridView);
         gridView.setAdapter(posterViewAdapter);
 
-
         return layout;
     }
 
-    private void retrievePages(){
+    private void retrievePages() {
+        for (DownloaderTask task : mDownloaderTasks) {
+            task.cancel(true);
+        }
+
+        filmBundles.clear();
+        posterViewAdapter.notifyDataSetChanged();
+
 
         for (int i = 0; i < 10; i++) {
-            Uri builtUri = Uri.parse(MOVIEDB_DISCOVER_MOVIE_URL).buildUpon()
+            Uri builtUri = Uri.parse(String.format("%s%s?", MOVIE_BASE_URL, selectedOption)).buildUpon()
                     .appendQueryParameter(APPID_PARAM, BuildConfig.THE_MOVIEDB_API_KEY)
                     .appendQueryParameter(PAGE_NUMBER_PARAM, Integer.toString(i + 1))
                     .build();
 
-            new DownloaderTask().execute(builtUri.toString());
+            DownloaderTask downloaderTask = new DownloaderTask();
+            mDownloaderTasks.add(downloaderTask);
+            downloaderTask.execute(builtUri.toString());
         }
 
     }
 
-    public class DownloaderTask extends AsyncTask<String, JSONObject, List<JSONObject>> {
+    public class DownloaderTask extends AsyncTask<String, Bundle, Void> {
 
         private final String LOG_TAG = DownloaderTask.class.getSimpleName();
 
         @Override
-        protected List<JSONObject> doInBackground(String... params) {
-            List<JSONObject> objects = new ArrayList<>();
-
+        protected Void doInBackground(String... params) {
             for (String target : params) {
+                JSONObject jsonObject = null;
+
                 try {
                     String json_str = IOUtils.toString(new URL(target).openStream());
-                    publishProgress(new JSONObject(json_str));
+                    jsonObject = new JSONObject(json_str);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
+                if (jsonObject != null) {
+                    try {
+                        JSONArray filmsInfoArray = jsonObject.getJSONArray("results");
+
+                        for (int i = 0; i < filmsInfoArray.length(); i++) {
+                            JSONObject filmInfo = filmsInfoArray.getJSONObject(i);
+
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("id", filmInfo.getInt("id"));
+                            bundle.putString("poster", filmInfo.getString("poster_path"));
+                            bundle.putString("name", filmInfo.getString("title"));
+                            bundle.putString("year", filmInfo.getString("release_date"));
+                            bundle.putString("genre", filmInfo.getJSONArray("genre_ids").toString());
+                            bundle.putDouble("rating", filmInfo.getDouble("vote_average"));
+
+                            publishProgress(bundle);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
-            return objects;
+            return null;
         }
 
         @Override
-        protected void onProgressUpdate(JSONObject... values) {
-            for (JSONObject jsonObject : values) {
-                try {
-                    JSONArray filmsInfoArray = jsonObject.getJSONArray("results");
+        protected void onProgressUpdate(Bundle... values) {
+            filmBundles.addAll(Arrays.asList(values));
+            posterViewAdapter.notifyDataSetChanged();
+        }
 
-                    for (int i = 0; i < filmsInfoArray.length(); i++) {
-                        JSONObject filmInfo = filmsInfoArray.getJSONObject(i);
-
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("id", filmInfo.getInt("id"));
-                        bundle.putString("poster", filmInfo.getString("poster_path"));
-                        bundle.putString("name", filmInfo.getString("title"));
-                        bundle.putString("year", filmInfo.getString("release_date"));
-                        bundle.putString("genre", filmInfo.getJSONArray("genre_ids").toString());
-                        bundle.putDouble("rating", filmInfo.getDouble("vote_average"));
-
-                        JSONArray genreInfoArray = jsonObject.getJSONArray("genre_ids");
-                        for (int j = 0; j < genreInfoArray.length(); j++){
-                            JSONObject genreInfo = genreInfoArray.getJSONObject(j);
-
-                            Bundle bundle_genre = new Bundle();
-                            bundle_genre.putInt("id", genreInfo.getInt("id"));
-                            bundle_genre.putString("name", genreInfo.getString("name"));
-
-                            genreBundeles.add(bundle_genre);
-                        }
-
-                        filmBundles.add(bundle);
-                    }
-
-                    posterViewAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+        @Override
+        protected void onPostExecute(Void value) {
+            mDownloaderTasks.remove(this);
         }
     }
 

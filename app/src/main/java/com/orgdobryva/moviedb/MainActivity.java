@@ -1,10 +1,6 @@
 package com.orgdobryva.moviedb;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,27 +10,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
     private int current_page = 1;
+    private CatalogFragment mCatalogFragment = new CatalogFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState == null){
-            CatalogFragment mCatalogFragment = new CatalogFragment();
-
+        if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
             bundle.putInt("current_page", current_page);
             mCatalogFragment.setArguments(bundle);
@@ -56,6 +43,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
     }
 
     @Override
@@ -77,15 +66,33 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+
+            case R.id.menu_search:
+
+                break;
+
+            case R.id.menu_share:
+
+                break;
+
+            case R.id.sort_by_popularity:
+
+                item.setChecked(true);
+                mCatalogFragment.sortByPopular();
+
+                break;
+
+            case R.id.sort_by_reit:
+
+                item.setChecked(true);
+                mCatalogFragment.sortByRating();
+
+                break;
+
         }
+
 
         return super.onOptionsItemSelected(item);
     }

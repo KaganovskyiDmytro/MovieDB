@@ -5,4 +5,9 @@
     <string name="posterDefaultType">Unknown Type</string>
     <string name="posterDefaultYear">1970</string>
     <string name="posterDefaultImageDesc">Poster Image</string>
+    <string name="search">Search</string>
+    <string name="share">Share</string>
+    <string name="sort">Sort</string>
+    <string name="by_rating">by rating</string>
+    <string name="by_popularity">by popularity</string>
 </resources>

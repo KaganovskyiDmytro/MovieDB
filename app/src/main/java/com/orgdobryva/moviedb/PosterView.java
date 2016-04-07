@@ -37,7 +37,7 @@ public class PosterView extends LinearLayout {
         this.tvFilmReit = (TextView) findViewById(R.id.filmReit);
         this.tvFilmYear = (TextView) findViewById(R.id.filmYear);
         this.tvFilmGenre = (TextView) findViewById(R.id.filmType);
-        this.ivPoster = (ImageView) findViewById(R.id.posterImage);
+        this.ivPoster = (ImageView) findViewById(R.id.filmPoster);
     }
 
     public Bundle getBundle() {
