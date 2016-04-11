@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.view.View.OnClickListener;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,6 +42,7 @@ public class CatalogFragment extends Fragment {
 
     private List<Bundle> filmBundles;
     private NewPosterViewAdapter posterViewAdapter;
+    private GridView gridView;
 
 
     public CatalogFragment() {
@@ -67,9 +69,10 @@ public class CatalogFragment extends Fragment {
 
         retrievePages();
 
-        GridView gridView = (GridView)inflater.inflate(R.layout.video_catalog, container, false);
+        gridView = (GridView)inflater.inflate(R.layout.video_catalog, container, false);
         gridView.setAdapter(posterViewAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -79,13 +82,12 @@ public class CatalogFragment extends Fragment {
                 intent.putExtra("details", details);
                 startActivity(intent);
 
-
             }
-
         });
 
         return gridView;
     }
+
 
     private void retrievePages() {
         for (DownloaderTask task : mDownloaderTasks) {
