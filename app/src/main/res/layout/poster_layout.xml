@@ -1,53 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:clickable="true">
+              android:clickable="true"
+              android:focusable="false"
+              android:focusableInTouchMode="false"
+              android:orientation="horizontal">
 
     <ImageView
+        android:id="@+id/filmPoster"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:id="@+id/filmPoster"
         android:contentDescription="@string/posterDefaultImageDesc"/>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/container">
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/filmName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/posterDefaulName"
-            android:id="@+id/filmName"
             android:layout_weight="1"
+            android:text="@string/posterDefaulName"
             android:textColor="#1e2ee1"
             android:textSize="12sp"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/posterDefaultReit"
             android:id="@+id/filmReit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="5"
+            android:text="@string/posterDefaultReit"
             android:textSize="12sp"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/posterDefaultType"
             android:id="@+id/filmType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="@string/posterDefaultType"
             android:textSize="12sp"/>
 
         <TextView
+            android:id="@+id/filmYear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/posterDefaultYear"
-            android:id="@+id/filmYear"
             android:layout_weight="5"
+            android:text="@string/posterDefaultYear"
             android:textSize="12sp"/>
     </LinearLayout>
 

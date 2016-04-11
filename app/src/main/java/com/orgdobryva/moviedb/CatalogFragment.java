@@ -1,14 +1,18 @@
 package com.orgdobryva.moviedb;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -59,16 +63,28 @@ public class CatalogFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.video_catalog, container, false);
-
         this.posterViewAdapter = new NewPosterViewAdapter(getContext(), filmBundles);
 
         retrievePages();
 
-        GridView gridView = (GridView) layout.findViewById(R.id.catalogGridView);
+        GridView gridView = (GridView)inflater.inflate(R.layout.video_catalog, container, false);
         gridView.setAdapter(posterViewAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        return layout;
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Bundle details = posterViewAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), FilmDetails.class);
+                intent.putExtra("details", details);
+                startActivity(intent);
+
+
+            }
+
+        });
+
+        return gridView;
     }
 
     private void retrievePages() {

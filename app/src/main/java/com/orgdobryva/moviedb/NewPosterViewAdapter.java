@@ -60,7 +60,6 @@ public class NewPosterViewAdapter extends ArrayAdapter<Bundle> {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             convertView = inflater.inflate(R.layout.poster_layout, parent, false);
-
         }
 
         TextView tvFilmName = (TextView) convertView.findViewById(R.id.filmName);

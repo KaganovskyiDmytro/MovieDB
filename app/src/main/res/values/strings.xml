@@ -18,4 +18,8 @@
     <string name="sort">Sort</string>
     <string name="by_rating">by rating</string>
     <string name="by_popularity">by popularity</string>
+    <string name="title_activity_film_details">FilmDetails</string>
+    <string name="filmDefaultOverview">filmOverview</string>
+    <string name="film_details_share">filmDetailsShare</string>
+
 </resources>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/catalogGridView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:verticalSpacing="10dp"
+          android:horizontalSpacing="5dp"
+          android:stretchMode="columnWidth"
+          android:numColumns="2"
+    android:contextClickable="true">
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/catalogGridView"
-        android:numColumns="2">
-    </GridView>
-
-</LinearLayout>
+</GridView>
