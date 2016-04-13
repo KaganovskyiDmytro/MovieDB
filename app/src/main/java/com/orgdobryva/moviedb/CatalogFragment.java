@@ -5,20 +5,18 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.view.View.OnClickListener;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,7 +39,7 @@ public class CatalogFragment extends Fragment {
     private List<DownloaderTask> mDownloaderTasks;
 
     private List<Bundle> filmBundles;
-    private NewPosterViewAdapter posterViewAdapter;
+    private PosterViewAdapter posterViewAdapter;
     private GridView gridView;
 
 
@@ -65,7 +63,7 @@ public class CatalogFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        this.posterViewAdapter = new NewPosterViewAdapter(getContext(), filmBundles);
+        this.posterViewAdapter = new PosterViewAdapter(getContext(), filmBundles);
 
         retrievePages();
 
@@ -78,9 +76,23 @@ public class CatalogFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Bundle details = posterViewAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), FilmDetails.class);
-                intent.putExtra("details", details);
-                startActivity(intent);
+
+
+//                Intent intent = new Intent(getActivity(), MainActivity.class);
+//                intent.putExtra("details", details);
+//                startActivity(intent);
+
+
+
+                FilmDetailsFragment detailsFragment = new FilmDetailsFragment();
+                detailsFragment.setArguments(details);
+
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content_fragment, detailsFragment);
+                fragmentTransaction.addToBackStack("catalog");
+                fragmentTransaction.commit();
+
 
             }
         });

@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity
             mCatalogFragment.setArguments(bundle);
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_fragment, mCatalogFragment)
+                    .replace(R.id.content_fragment, mCatalogFragment, "catalog")
                     .commit();
         }
 

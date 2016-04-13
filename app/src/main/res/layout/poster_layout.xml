@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:clickable="true"
               android:focusable="false"
               android:focusableInTouchMode="false"
               android:orientation="horizontal">
@@ -34,14 +33,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:text="@string/posterDefaultReit"
-            android:textSize="12sp"/>
-
-        <TextView
-            android:id="@+id/filmType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/posterDefaultType"
             android:textSize="12sp"/>
 
         <TextView

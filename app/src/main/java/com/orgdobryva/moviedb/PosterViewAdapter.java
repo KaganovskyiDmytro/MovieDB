@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * Created by human on 3/30/16.
  */
-public class NewPosterViewAdapter extends ArrayAdapter<Bundle> {
+public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
     private final int MINIMUM_VIEWS = 12;
     private int current = 0, total = 0;
@@ -38,10 +38,9 @@ public class NewPosterViewAdapter extends ArrayAdapter<Bundle> {
 
     private Bitmap template;
 
-    public NewPosterViewAdapter(Context context, List<Bundle> bundles) {
+    public PosterViewAdapter(Context context, List<Bundle> bundles) {
         super(context, 0, bundles);
         this.tasks = Collections.synchronizedMap(new HashMap<ImageView, PosterDownloadTask>());
-
         this.template = BitmapFactory.decodeResource(context.getResources(), R.drawable.pattern);
     }
 
