@@ -20,6 +20,7 @@ android {
 
     buildTypes.each {
         it.buildConfigField 'String', 'THE_MOVIEDB_API_KEY', MyMovieDBApiKey
+        it.buildConfigField 'String', 'YOUTUBE_API_KEY', YouTubeApiKey
     }
 }
 
@@ -29,4 +30,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'commons-io:commons-io:2.4'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

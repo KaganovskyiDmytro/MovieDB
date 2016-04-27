@@ -2,7 +2,6 @@ package com.orgdobryva.moviedb;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,15 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,7 +27,7 @@ public class CatalogFragment extends Fragment {
     private final String APPID_PARAM = "api_key";
     private final String PAGE_NUMBER_PARAM = "page";
 
-    private List<DownloaderTask> mDownloaderTasks;
+    private List<CatalogDownloaderTask> mDownloaderTasks;
 
     private List<Bundle> filmBundles;
     private PosterViewAdapter posterViewAdapter;
@@ -45,7 +36,19 @@ public class CatalogFragment extends Fragment {
 
     public CatalogFragment() {
         this.filmBundles = new ArrayList<>();
-        this.mDownloaderTasks = Collections.synchronizedList(new ArrayList<DownloaderTask>());
+        this.mDownloaderTasks = Collections.synchronizedList(new ArrayList<CatalogDownloaderTask>());
+    }
+
+    public PosterViewAdapter getPosterViewAdapter() {
+        return posterViewAdapter;
+    }
+
+    public List<Bundle> getFilmBundles() {
+        return filmBundles;
+    }
+
+    public List<CatalogDownloaderTask> getDownloaderTasks() {
+        return mDownloaderTasks;
     }
 
     public void sortByRating() {
@@ -78,21 +81,17 @@ public class CatalogFragment extends Fragment {
                 Bundle details = posterViewAdapter.getItem(position);
 
 
-//                Intent intent = new Intent(getActivity(), MainActivity.class);
-//                intent.putExtra("details", details);
-//                startActivity(intent);
+//                FilmDetailsFragment detailsFragment = new FilmDetailsFragment();
+//                detailsFragment.setArguments(details);
 
-
-
-                FilmDetailsFragment detailsFragment = new FilmDetailsFragment();
-                detailsFragment.setArguments(details);
-
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content_fragment, detailsFragment);
-                fragmentTransaction.addToBackStack("catalog");
-                fragmentTransaction.commit();
-
+//                FragmentManager fragmentManager = getFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.content_fragment, detailsFragment);
+//                fragmentTransaction.addToBackStack("catalog");
+//                fragmentTransaction.commit();
+                Intent intent = new Intent(getActivity(), DetailedActivity.class);
+                intent.putExtra("details", details);
+                startActivity(intent);
 
             }
         });
@@ -102,7 +101,7 @@ public class CatalogFragment extends Fragment {
 
 
     private void retrievePages() {
-        for (DownloaderTask task : mDownloaderTasks) {
+        for (CatalogDownloaderTask task : mDownloaderTasks) {
             task.cancel(true);
         }
 
@@ -116,68 +115,11 @@ public class CatalogFragment extends Fragment {
                     .appendQueryParameter(PAGE_NUMBER_PARAM, Integer.toString(i + 1))
                     .build();
 
-            DownloaderTask downloaderTask = new DownloaderTask();
+            CatalogDownloaderTask downloaderTask = new CatalogDownloaderTask(this);
             mDownloaderTasks.add(downloaderTask);
             downloaderTask.execute(builtUri.toString());
         }
 
-    }
-
-    public class DownloaderTask extends AsyncTask<String, Bundle, Void> {
-
-        private final String LOG_TAG = DownloaderTask.class.getSimpleName();
-
-        @Override
-        protected Void doInBackground(String... params) {
-            for (String target : params) {
-                JSONObject jsonObject = null;
-
-                try {
-                    String json_str = IOUtils.toString(new URL(target).openStream());
-                    jsonObject = new JSONObject(json_str);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                if (jsonObject != null) {
-                    try {
-                        JSONArray filmsInfoArray = jsonObject.getJSONArray("results");
-
-                        for (int i = 0; i < filmsInfoArray.length(); i++) {
-                            JSONObject filmInfo = filmsInfoArray.getJSONObject(i);
-
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("id", filmInfo.getInt("id"));
-                            bundle.putString("poster", filmInfo.getString("poster_path"));
-                            bundle.putString("name", filmInfo.getString("title"));
-                            bundle.putString("year", filmInfo.getString("release_date"));
-                            bundle.putString("genre", filmInfo.getJSONArray("genre_ids").toString());
-                            bundle.putDouble("rating", filmInfo.getDouble("vote_average"));
-
-                            publishProgress(bundle);
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Bundle... values) {
-            filmBundles.addAll(Arrays.asList(values));
-            posterViewAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        protected void onPostExecute(Void value) {
-            mDownloaderTasks.remove(this);
-        }
     }
 
 

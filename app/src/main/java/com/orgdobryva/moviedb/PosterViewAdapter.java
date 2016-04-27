@@ -3,8 +3,11 @@ package com.orgdobryva.moviedb;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,22 +36,53 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
     private final int MINIMUM_VIEWS = 12;
     private int current = 0, total = 0;
-
-    private Map<String, Bitmap> cache = new LinkedHashMap<>();
+//
+//    private Map<String, Bitmap> cache = new LinkedHashMap<>();
     private Map<ImageView, PosterDownloadTask> tasks;
+    private LruCache <String, Bitmap> mLruCache;
+    Context mContext;
+
 
     private Bitmap template;
 
     public PosterViewAdapter(Context context, List<Bundle> bundles) {
         super(context, 0, bundles);
+
+        mContext = context;
+
         this.tasks = Collections.synchronizedMap(new HashMap<ImageView, PosterDownloadTask>());
         this.template = BitmapFactory.decodeResource(context.getResources(), R.drawable.pattern);
+
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        final int cacheSize = maxMemory / 4;
+
+        mLruCache = new LruCache<String, Bitmap>(cacheSize) {
+
+            @Override
+            protected int sizeOf(String key, Bitmap value) {
+                return value.getByteCount()/1024;
+            }
+        };
+
+
     }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mLruCache.put(key, bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mLruCache.get(key);
+    }
+
 
     private int lastPosition = 0;
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         Bundle bundle = getItem(position);
 
         Log.i("TOTAL", position + "");
@@ -60,6 +95,8 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
             convertView = inflater.inflate(R.layout.poster_layout, parent, false);
         }
+
+
 
         TextView tvFilmName = (TextView) convertView.findViewById(R.id.filmName);
         tvFilmName.setText(bundle.getString("name"));
@@ -75,8 +112,8 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
         String posterPath = bundle.getString("poster");
 
-        if (!cache.containsKey(posterPath) || cache.get(posterPath) == null) {
-            cache.put(posterPath, null);
+//        if (!cache.containsKey(posterPath) || cache.get(posterPath) == null) {
+//            cache.put(posterPath, null);
 
             PosterDownloadTask posterDownloadTask = new PosterDownloadTask(ivPoster);
 
@@ -87,9 +124,9 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
             }
 
             posterDownloadTask.execute(posterPath);
-        }
+//        }
 
-        ivPoster.setImageBitmap(cache.get(posterPath) == null ? template : cache.get(posterPath));
+        ivPoster.setImageBitmap(mLruCache.get(posterPath) == null ? template : mLruCache.get(posterPath));
 
         lastPosition = position;
 
@@ -113,7 +150,7 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
                 try {
                     Bitmap bitmap = BitmapFactory.decodeStream(new URL(address).openStream());
-                    cache.put(path, bitmap);
+                    addBitmapToMemoryCache(String.valueOf(params[0]), bitmap);
 
                     return bitmap;
                 } catch (MalformedURLException e) {

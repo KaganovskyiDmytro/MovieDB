@@ -21,5 +21,12 @@
     <string name="title_activity_film_details">FilmDetails</string>
     <string name="filmDefaultOverview">filmOverview</string>
     <string name="film_details_share">filmDetailsShare</string>
+    <string name="title_activity_detailed">DetailedActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="player_error">Error initializing YouTube player</string>
+    <string name="seek_to">Jump To</string>
+    <string name="seek_to_hint">Seconds</string>
 
 </resources>

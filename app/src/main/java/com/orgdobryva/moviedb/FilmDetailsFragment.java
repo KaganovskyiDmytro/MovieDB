@@ -46,7 +46,6 @@ public class FilmDetailsFragment extends Fragment {
         Bundle arguments = getArguments();
 
         if (arguments != null) {
-
             int id = arguments.getInt("id");
 
             Uri buildUri = Uri.parse(MOVIE_BASE_URL_DETAILED).buildUpon()
@@ -56,8 +55,6 @@ public class FilmDetailsFragment extends Fragment {
 
             DetailsDownloader detailsDownloader = new DetailsDownloader();
             detailsDownloader.execute(buildUri.toString());
-
-
         }
 
 
@@ -89,12 +86,14 @@ public class FilmDetailsFragment extends Fragment {
                 bundle.putString("year", object.getString("release_date"));
 
                 JSONArray genreArray = object.getJSONArray("genres");
-                for (int i = 0; i < genreArray.length(); i++) {
-                    JSONObject genresInfo = genreArray.getJSONObject(i);
 
-                    genresType.add(genresInfo.getString("name"));
+                StringBuilder sb = new StringBuilder(genreArray.getJSONObject(0).getString("name"));
 
+                for (int i = 1; i < genreArray.length(); i++) {
+                    sb.append(", ").append(genreArray.getJSONObject(i).getString("name"));
                 }
+
+                bundle.putString("genres", sb.toString());
 
                 return bundle;
             } catch (JSONException e) {
@@ -121,17 +120,7 @@ public class FilmDetailsFragment extends Fragment {
                 tvFilmOverview.setText(filmBundle.getString("overview"));
 
                 TextView tvGenres = (TextView) getView().findViewById(R.id.detailedFilmType);
-
-                if (!genresType.isEmpty()) {
-                    StringBuilder sb = new StringBuilder(genresType.get(0));
-
-                    for (int j = 1; j < genresType.size(); j++) {
-                        sb.append(", ").append(genresType.get(j));
-                    }
-
-                    tvGenres.setText(sb.toString());
-                }
-
+                tvGenres.setText(filmBundle.getString("genres"));
 
                 ImageView ivPoster = (ImageView) getView().findViewById(R.id.detailedFilmPoster);
 
