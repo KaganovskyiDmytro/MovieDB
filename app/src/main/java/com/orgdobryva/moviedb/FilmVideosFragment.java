@@ -1,20 +1,27 @@
 package com.orgdobryva.moviedb;
 
+import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-import com.google.android.youtube.player.YouTubePlayerView;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -25,30 +32,25 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class FilmVideosFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
+public class FilmVideosFragment extends Fragment {
 
     private final String MOVIE_BASE_URL_REVIEWS = "http://api.themoviedb.org/3/movie/";
     private final String APPID_PARAM = "api_key";
     private final String VIDEOS = "videos";
 
-    private ArrayList<String> videoList = new ArrayList<>();
-
-    private YouTubePlayerSupportFragment youTubeView;
-
-    private String movieKey;
-
+    private LinearLayout mLinearLayout;
+    private ScrollView mView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_film_videos, container, false);
+        mView = (ScrollView) inflater.inflate(R.layout.fragment_film_videos, container, false);
 
-//        youTubeView = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtube_view);
-
-        Log.i("ON ACTIVITY CREATED", "" + youTubeView);
+        mLinearLayout = (LinearLayout) mView.findViewById(R.id.videos_container);
 
         Bundle arguments = getArguments();
 
@@ -66,34 +68,16 @@ public class FilmVideosFragment extends Fragment implements YouTubePlayer.OnInit
             videosDownLoaderTask.execute(buildUri.toString());
         }
 
-        return view;
+        return mView;
     }
 
-    @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
-
-        Log.i("MOVIE KEY:", movieKey);
-
-        if (!wasRestored) {
-            player.cueVideo(movieKey); // Plays https://www.youtube.com/watch?v=fhWaJi1Hsfo
-        }
-
-    }
-
-    @Override
-    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult errorReason) {
-        if (errorReason.isUserRecoverableError()) {
-            errorReason.getErrorDialog(getActivity(), 1).show();
-        } else {
-            String error = String.format(getString(R.string.player_error), errorReason.toString());
-            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private class VideosDownLoaderTask extends AsyncTask<String, Void, String> {
+    private class VideosDownLoaderTask extends AsyncTask<String, Void, List<String>> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected List<String> doInBackground(String... params) {
+
+            List<String> movieKeys = new ArrayList<>();
+
 
             try {
 
@@ -110,32 +94,64 @@ public class FilmVideosFragment extends Fragment implements YouTubePlayer.OnInit
                     e.printStackTrace();
                 }
 
-                Bundle bundle = new Bundle();
-
                 JSONArray videoArray = object.getJSONArray("results");
 
                 for (int i = 0; i < videoArray.length(); i++) {
                     JSONObject key = videoArray.getJSONObject(i);
-                    String movieKey = key.getString("key");
+                    String mkey = key.getString("key");
 
-                    return movieKey;
-
+                    movieKeys.add(mkey);
                     // TODO: STOPS AT ONE VIDEO.
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return null;
+            return movieKeys;
         }
 
         @Override
-        protected void onPostExecute(String movieKey) {
-            FilmVideosFragment.this.movieKey = movieKey;
+        protected void onPostExecute(final List<String> movieKeys) {
 
-//            Log.i("POST EXECUTE: ", movieKey + "%" + BuildConfig.YOUTUBE_API_KEY + ":" + FilmVideosFragment.this + "#" + youTubeView);
+            for (final String key : movieKeys) {
+                YouTubeThumbnailView thumbnailView = new YouTubeThumbnailView(getContext());
+                thumbnailView.initialize(BuildConfig.YOUTUBE_API_KEY, new YouTubeInitializer(key));
+                thumbnailView.setAdjustViewBounds(true);
+                thumbnailView.setClickable(true);
+                thumbnailView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("https://www.youtube.com/watch?v=" + key));
+                        startActivity(intent);
+                    }
+                });
 
-            youTubeView.initialize(BuildConfig.YOUTUBE_API_KEY, FilmVideosFragment.this);
+                mLinearLayout.addView(thumbnailView, new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            }
         }
     }
+
+    private class YouTubeInitializer implements YouTubeThumbnailView.OnInitializedListener {
+
+        private final String movieKey;
+
+        public YouTubeInitializer(String movieKey) {
+            this.movieKey = movieKey;
+        }
+
+        @Override
+        public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader youTubeThumbnailLoader) {
+            youTubeThumbnailLoader.setVideo(movieKey);
+        }
+
+        @Override
+        public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
+
+        }
+    }
+
 }
+
+

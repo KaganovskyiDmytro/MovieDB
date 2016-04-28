@@ -175,7 +175,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         private Bundle filmDetails;
         private FilmDetailsFragment mDetailsFragment;
-        private FilmVideosFragmentNew mVideosFragment;
+        private FilmVideosFragment mVideosFragment;
         private FilmReviewsFragment mReviewsFragment;
 
         public SectionsPagerAdapter(FragmentManager fm, Bundle filmDetails) {
@@ -195,7 +195,7 @@ public class DetailedActivity extends AppCompatActivity {
                     return mDetailsFragment;
                 case 1:
                     if (mVideosFragment == null) {
-                        mVideosFragment = new FilmVideosFragmentNew();
+                        mVideosFragment = new FilmVideosFragment();
                         mVideosFragment.setArguments(filmDetails);
                     }
                     return mVideosFragment;
