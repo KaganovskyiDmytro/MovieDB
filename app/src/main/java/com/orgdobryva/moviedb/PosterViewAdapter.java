@@ -36,10 +36,10 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
     private final int MINIMUM_VIEWS = 12;
     private int current = 0, total = 0;
-//
+    //
 //    private Map<String, Bitmap> cache = new LinkedHashMap<>();
     private Map<ImageView, PosterDownloadTask> tasks;
-    private LruCache <String, Bitmap> mLruCache;
+    private LruCache<String, Bitmap> mLruCache;
     Context mContext;
 
 
@@ -60,7 +60,7 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
             @Override
             protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount()/1024;
+                return value.getByteCount() / 1024;
             }
         };
 
@@ -97,7 +97,6 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
         }
 
 
-
         TextView tvFilmName = (TextView) convertView.findViewById(R.id.filmName);
         tvFilmName.setText(bundle.getString("name"));
 
@@ -115,15 +114,15 @@ public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 //        if (!cache.containsKey(posterPath) || cache.get(posterPath) == null) {
 //            cache.put(posterPath, null);
 
-            PosterDownloadTask posterDownloadTask = new PosterDownloadTask(ivPoster);
+        PosterDownloadTask posterDownloadTask = new PosterDownloadTask(ivPoster);
 
-            PosterDownloadTask old = tasks.put(ivPoster, posterDownloadTask);
+        PosterDownloadTask old = tasks.put(ivPoster, posterDownloadTask);
 
-            if (old != null) {
-                old.cancel(true);
-            }
+        if (old != null) {
+            old.cancel(true);
+        }
 
-            posterDownloadTask.execute(posterPath);
+        posterDownloadTask.execute(posterPath);
 //        }
 
         ivPoster.setImageBitmap(mLruCache.get(posterPath) == null ? template : mLruCache.get(posterPath));

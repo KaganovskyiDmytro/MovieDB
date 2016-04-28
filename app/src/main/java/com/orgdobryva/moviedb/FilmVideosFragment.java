@@ -46,7 +46,7 @@ public class FilmVideosFragment extends Fragment implements YouTubePlayer.OnInit
 
         View view = inflater.inflate(R.layout.fragment_film_videos, container, false);
 
-        youTubeView = (YouTubePlayerSupportFragment)getChildFragmentManager().findFragmentById(R.id.youtube_view);
+//        youTubeView = (YouTubePlayerSupportFragment) getChildFragmentManager().findFragmentById(R.id.youtube_view);
 
         Log.i("ON ACTIVITY CREATED", "" + youTubeView);
 
@@ -90,21 +90,21 @@ public class FilmVideosFragment extends Fragment implements YouTubePlayer.OnInit
         }
     }
 
-    private class VideosDownLoaderTask extends AsyncTask<String, Void, String>{
+    private class VideosDownLoaderTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
 
-            try{
+            try {
 
                 JSONObject object = null;
 
-                try{
+                try {
 
                     String json_str = IOUtils.toString(new URL(params[0]).openStream());
                     object = new JSONObject(json_str);
 
-                }catch (MalformedURLException e) {
+                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -114,7 +114,7 @@ public class FilmVideosFragment extends Fragment implements YouTubePlayer.OnInit
 
                 JSONArray videoArray = object.getJSONArray("results");
 
-                for (int i = 0; i <videoArray.length(); i++){
+                for (int i = 0; i < videoArray.length(); i++) {
                     JSONObject key = videoArray.getJSONObject(i);
                     String movieKey = key.getString("key");
 
@@ -122,7 +122,7 @@ public class FilmVideosFragment extends Fragment implements YouTubePlayer.OnInit
 
                     // TODO: STOPS AT ONE VIDEO.
                 }
-            } catch  (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 

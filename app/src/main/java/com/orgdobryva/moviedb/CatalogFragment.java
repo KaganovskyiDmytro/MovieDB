@@ -70,7 +70,7 @@ public class CatalogFragment extends Fragment {
 
         retrievePages();
 
-        gridView = (GridView)inflater.inflate(R.layout.video_catalog, container, false);
+        gridView = (GridView) inflater.inflate(R.layout.video_catalog, container, false);
         gridView.setAdapter(posterViewAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

@@ -48,34 +48,32 @@ public class FilmReviewsFragment extends ListFragment implements AdapterView.OnI
 
             int id = arguments.getInt("id");
 
-            if (reviewsList.isEmpty()){
-                Uri  buildUri = Uri.parse(MOVIE_BASE_URL_REVIEWS).buildUpon()
-                    .appendPath(Integer.toString(id))
-                    .appendPath(REVIEW)
-                    .appendQueryParameter(APPID_PARAM, BuildConfig.THE_MOVIEDB_API_KEY)
-                    .build();
+            if (reviewsList.isEmpty()) {
+                Uri buildUri = Uri.parse(MOVIE_BASE_URL_REVIEWS).buildUpon()
+                        .appendPath(Integer.toString(id))
+                        .appendPath(REVIEW)
+                        .appendQueryParameter(APPID_PARAM, BuildConfig.THE_MOVIEDB_API_KEY)
+                        .build();
 
 
                 ReviewsDownloaderTask task = new ReviewsDownloaderTask();
                 task.execute(buildUri.toString());
             }
 
-            String [] from = {
+            String[] from = {
                     "author", "content"
             };
-            int [] to = {
+            int[] to = {
                     R.id.reviews_author, R.id.reviews_content
             };
 
             SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), reviewsList,
                     R.layout.reviews_list_item, from, to);
-//            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
-//                    android.R.layout.simple_list_item_2, reviews);
 
             setListAdapter(simpleAdapter);
         }
 
-        return  view;
+        return view;
 
     }
 
@@ -85,7 +83,7 @@ public class FilmReviewsFragment extends ListFragment implements AdapterView.OnI
 
     }
 
-    private class ReviewsDownloaderTask extends AsyncTask<String, Map<String, Object>, Void>{
+    private class ReviewsDownloaderTask extends AsyncTask<String, Map<String, Object>, Void> {
 
         @Override
         protected Void doInBackground(String... params) {
@@ -136,7 +134,7 @@ public class FilmReviewsFragment extends ListFragment implements AdapterView.OnI
         protected void onProgressUpdate(Map<String, Object>... values) {
             reviewsList.add(values[0]);
 
-            ((SimpleAdapter)getListAdapter()).notifyDataSetChanged();
+            ((SimpleAdapter) getListAdapter()).notifyDataSetChanged();
         }
     }
 }

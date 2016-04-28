@@ -106,7 +106,7 @@ public class DetailedActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mViewPager.getCurrentItem() == 0){
+        if (mViewPager.getCurrentItem() == 0) {
             super.onBackPressed();
         } else {
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
@@ -175,7 +175,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         private Bundle filmDetails;
         private FilmDetailsFragment mDetailsFragment;
-        private FilmVideosFragment mVideosFragment;
+        private FilmVideosFragmentNew mVideosFragment;
         private FilmReviewsFragment mReviewsFragment;
 
         public SectionsPagerAdapter(FragmentManager fm, Bundle filmDetails) {
@@ -195,17 +195,17 @@ public class DetailedActivity extends AppCompatActivity {
                     return mDetailsFragment;
                 case 1:
                     if (mVideosFragment == null) {
-                        mVideosFragment = new FilmVideosFragment();
+                        mVideosFragment = new FilmVideosFragmentNew();
                         mVideosFragment.setArguments(filmDetails);
                     }
                     return mVideosFragment;
 
                 case 2:
-                    if(mReviewsFragment == null){
+                    if (mReviewsFragment == null) {
                         mReviewsFragment = new FilmReviewsFragment();
                         mReviewsFragment.setArguments(filmDetails);
                     }
-                    return  mReviewsFragment;
+                    return mReviewsFragment;
             }
 
 
