@@ -1,5 +1,6 @@
 package com.orgdobryva.moviedb;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,12 +33,15 @@ public class CatalogFragment extends Fragment {
     private List<Bundle> filmBundles;
     private PosterViewAdapter posterViewAdapter;
     private GridView gridView;
+    private Callbacks mCallbacks;
 
 
     public CatalogFragment() {
         this.filmBundles = new ArrayList<>();
         this.mDownloaderTasks = Collections.synchronizedList(new ArrayList<CatalogDownloaderTask>());
     }
+
+
 
     public PosterViewAdapter getPosterViewAdapter() {
         return posterViewAdapter;
@@ -51,6 +55,9 @@ public class CatalogFragment extends Fragment {
         return mDownloaderTasks;
     }
 
+    public interface Callbacks{
+        void onFilmSelected (int position);
+    }
     public void sortByRating() {
 
         selectedOption = MOVIE_URL_TOP_RATED;
@@ -62,6 +69,12 @@ public class CatalogFragment extends Fragment {
 
         selectedOption = MOVIE_URL_POPULAR;
         retrievePages();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCallbacks = (Callbacks) activity;
     }
 
     @Override
@@ -122,5 +135,9 @@ public class CatalogFragment extends Fragment {
 
     }
 
-
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
 }
