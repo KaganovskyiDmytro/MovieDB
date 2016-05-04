@@ -28,6 +28,11 @@
                     android:id="@+id/sort_by_popularity"
                     android:title="@string/by_popularity"/>
 
+                <item android:id="@+id/choose_favorites"
+                      android:title="favorites">
+
+    </item>
+
             </group>
 
 

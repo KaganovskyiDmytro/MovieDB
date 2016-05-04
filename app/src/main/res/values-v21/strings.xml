@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="posterDefaulName">Unknown film</string>
+    <string name="posterDefaultName">Unknown film</string>
     <string name="posterDefaultReit">0.0</string>
     <string name="posterDefaultType">Unknown Type</string>
     <string name="posterDefaultYear">1970</string>

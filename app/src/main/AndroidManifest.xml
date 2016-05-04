@@ -29,12 +29,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.orgdobryva.moviedb.MainActivity" />
         </activity>
-        
+
         <provider
-            android:authorities="com.orgdobryva.moviedb.mydb"
-            android:name=".FilmContract">
+            android:name=".FilmContract"
+            android:authorities="com.orgdobryva.moviedb.mydb" >
         </provider>
-        
+
+        <activity android:name=".FavoritesTableCreator" >
+        </activity>
     </application>
 
 </manifest>

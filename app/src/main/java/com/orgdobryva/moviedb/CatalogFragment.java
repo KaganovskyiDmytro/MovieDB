@@ -42,7 +42,6 @@ public class CatalogFragment extends Fragment {
     }
 
 
-
     public PosterViewAdapter getPosterViewAdapter() {
         return posterViewAdapter;
     }
@@ -55,9 +54,10 @@ public class CatalogFragment extends Fragment {
         return mDownloaderTasks;
     }
 
-    public interface Callbacks{
-        void onFilmSelected (int position);
+    public interface Callbacks {
+        void onFilmSelected(int position);
     }
+
     public void sortByRating() {
 
         selectedOption = MOVIE_URL_TOP_RATED;
@@ -94,17 +94,26 @@ public class CatalogFragment extends Fragment {
                 Bundle details = posterViewAdapter.getItem(position);
 
 
-//                FilmDetailsFragment detailsFragment = new FilmDetailsFragment();
-//                detailsFragment.setArguments(details);
+                if (getActivity().findViewById(R.id.detailedContainer) == null) {
 
-//                FragmentManager fragmentManager = getFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.content_fragment, detailsFragment);
+                    Intent intent = new Intent(getActivity(), DetailedActivity.class);
+                    intent.putExtra("details", details);
+                    startActivity(intent);
+
+                } else {
+
+//                    FilmDetailsFragment detailsFragment = new FilmDetailsFragment();
+                    DetailedFragment detailsFragment = new DetailedFragment();
+                    detailsFragment.setArguments(details);
+
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.detailedContainer, detailsFragment);
 //                fragmentTransaction.addToBackStack("catalog");
-//                fragmentTransaction.commit();
-                Intent intent = new Intent(getActivity(), DetailedActivity.class);
-                intent.putExtra("details", details);
-                startActivity(intent);
+                    fragmentTransaction.commit();
+
+                }
+
 
             }
         });

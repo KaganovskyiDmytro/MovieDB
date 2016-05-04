@@ -5,7 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="posterDefaulName">Unknown film</string>
+    <string name="posterDefaultName">Unknown film</string>
     <string name="posterDefaultReit">0.0</string>
     <string name="posterDefaultType">Unknown Type</string>
     <string name="posterDefaultYear">1970</string>

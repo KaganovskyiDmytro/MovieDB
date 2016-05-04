@@ -44,10 +44,12 @@ public class FilmContract extends ContentProvider {
         uriMatcher.addURI(PROVIDER_NAME, FILMS_TABLE_NAME + "/#", FILM_ID);
     }
 
+    DatabaseFilms dbHelper;
+
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        DatabaseFilms dbHelper = new DatabaseFilms(context);
+        dbHelper = new DatabaseFilms(context);
 
         db = dbHelper.getWritableDatabase();
         return (db == null) ? false : true;
@@ -114,4 +116,5 @@ public class FilmContract extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
+
 }

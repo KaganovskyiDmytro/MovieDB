@@ -22,15 +22,16 @@ public class MainActivity extends AppCompatActivity
     private int current_page = 1;
     private CatalogFragment mCatalogFragment = new CatalogFragment();
 
-    @LayoutRes
-    protected int getLayoutResID(){
-        return R.layout.activity_masterdetail;
-    }
+//    @LayoutRes
+//    protected int getLayoutResID(){
+//        return R.layout.activity_masterdetail;
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutResID());
+//        setContentView(getLayoutResID());
+        setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
@@ -99,6 +100,10 @@ public class MainActivity extends AppCompatActivity
 
                 item.setChecked(true);
                 mCatalogFragment.sortByRating();
+
+                break;
+
+            case R.id.choose_favorites:
 
                 break;
 
