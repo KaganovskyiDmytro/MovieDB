@@ -2,6 +2,8 @@ package com.orgdobryva.moviedb;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +21,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.nio.ByteBuffer;
 
 public class DetailedFragment extends Fragment {
 
@@ -32,19 +37,13 @@ public class DetailedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_detailed, container, false);
 
-//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-//        getActivity().setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-//        getActionBar().setNavigationMode();
+        setHasOptionsMenu(true);
 
         final Bundle details = getArguments();
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager(), details);
 
-        // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) view.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -74,9 +73,6 @@ public class DetailedFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
 
                 Bundle details = getArguments();
 
@@ -89,6 +85,15 @@ public class DetailedFragment extends Fragment {
                     ContentValues cv = new ContentValues();
                     cv.put("film_id", details.getInt("id"));
                     cv.put("film_name", details.getString("name"));
+
+
+                    Bitmap posterBitmap = mSectionsPagerAdapter.getDetailsFragment().getPosterBitmap();
+
+                    ByteBuffer bb = ByteBuffer.allocate(posterBitmap.getByteCount());
+
+                    posterBitmap.copyPixelsToBuffer(bb);
+
+                    cv.put("film_image", bb.array());
 
                     Log.i("CONTENT VALUE", cv.toString());
 
@@ -106,21 +111,6 @@ public class DetailedFragment extends Fragment {
         return view;
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (mViewPager.getCurrentItem() == 0) {
-//            super.onBackPressed();
-//        } else {
-//            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
-//        }
-//    }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_detailed, menu);
-//        return true;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -134,23 +124,13 @@ public class DetailedFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
         }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -169,10 +149,6 @@ public class DetailedFragment extends Fragment {
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private Bundle filmDetails;
@@ -184,6 +160,10 @@ public class DetailedFragment extends Fragment {
             super(fm);
             this.filmDetails = filmDetails;
 
+        }
+
+        public FilmDetailsFragment getDetailsFragment() {
+            return mDetailsFragment;
         }
 
         @Override
@@ -210,15 +190,12 @@ public class DetailedFragment extends Fragment {
                     return mReviewsFragment;
             }
 
-
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+
             return 3;
         }
 

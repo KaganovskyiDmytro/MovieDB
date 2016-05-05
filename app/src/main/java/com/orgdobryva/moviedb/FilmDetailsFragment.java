@@ -33,9 +33,7 @@ public class FilmDetailsFragment extends Fragment {
 
     private ArrayList<String> genresType = new ArrayList<>();
 
-
-    public FilmDetailsFragment() {
-    }
+    private Bitmap posterBitmap;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +57,10 @@ public class FilmDetailsFragment extends Fragment {
 
 
         return view;
+    }
+
+    public Bitmap getPosterBitmap() {
+        return posterBitmap;
     }
 
     public class DetailsDownloader extends AsyncTask<String, Bundle, Bundle> {
@@ -163,6 +165,7 @@ public class FilmDetailsFragment extends Fragment {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             mImageView.setImageBitmap(bitmap);
+            posterBitmap = bitmap;
         }
     }
 }

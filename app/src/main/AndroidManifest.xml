@@ -20,22 +20,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".DetailedActivity"
-            android:label="@string/title_activity_detailed"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.orgdobryva.moviedb.MainActivity" />
-        </activity>
+
 
         <provider
             android:name=".FilmContract"
             android:authorities="com.orgdobryva.moviedb.mydb" >
         </provider>
 
-        <activity android:name=".FavoritesTableCreator" >
+        <activity android:name=".FavoritesFragment" >
         </activity>
     </application>
 

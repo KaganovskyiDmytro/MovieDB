@@ -1,36 +1,34 @@
 package com.orgdobryva.moviedb;
 
-import android.content.Intent;
-import android.content.UriMatcher;
-import android.net.Uri;
+import android.app.ActionBar;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-                    CatalogFragment.Callbacks{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private int current_page = 1;
     private CatalogFragment mCatalogFragment = new CatalogFragment();
+    private FavoritesFragment mFavoritesFragment = new FavoritesFragment();
 
-//    @LayoutRes
-//    protected int getLayoutResID(){
-//        return R.layout.activity_masterdetail;
-//    }
+//    private DiskLruCache mDiskLruCache;
+    private final Object mDiskCacheLock = new Object();
+    private boolean mDiskCacheStarting = true;
+    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
+    private static final String DISK_CACHE_SUBDIR = "thumbnails";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(getLayoutResID());
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
@@ -67,13 +65,24 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public void onAttachFragment(android.app.Fragment fragment) {
+
+        Log.i("ONATTACH", "It works");
+
+        ActionBar supportActionBar = getActionBar();
+        switch (fragment.getTag()) {
+            case "favorites":
+                supportActionBar.setTitle("Favorites");
+                break;
+
+            case "catalog":
+                supportActionBar.setTitle("Catalog");
+                break;
+        }
     }
 
     @Override
@@ -91,21 +100,24 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.sort_by_popularity:
 
+
                 item.setChecked(true);
-                mCatalogFragment.sortByPopular();
+                if (mCatalogFragment.isVisible()) {
+                    mCatalogFragment.sortByPopular();
+                }
+
 
                 break;
 
             case R.id.sort_by_reit:
 
                 item.setChecked(true);
-                mCatalogFragment.sortByRating();
+                if (mCatalogFragment.isVisible()) {
+                    mCatalogFragment.sortByRating();
+                }
 
                 break;
 
-            case R.id.choose_favorites:
-
-                break;
 
         }
 
@@ -117,31 +129,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        switch (item.getItemId()) {
 
-        } else if (id == R.id.nav_slideshow) {
+            case R.id.nav_favorites:
 
-        } else if (id == R.id.nav_manage) {
+                item.setChecked(true);
+                FragmentManager fm = getSupportFragmentManager();
+                fm.beginTransaction().replace(R.id.content_fragment, mFavoritesFragment, "favorites")
+                        .addToBackStack("catalog").commit();
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+                break;
 
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    @Override
-    public void onFilmSelected(int position) {
-        if(findViewById(R.id.detailedContainer) == null) {
 
-        }
-    }
+
 }

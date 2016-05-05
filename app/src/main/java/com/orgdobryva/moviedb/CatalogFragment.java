@@ -1,13 +1,14 @@
 package com.orgdobryva.moviedb;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -41,6 +42,10 @@ public class CatalogFragment extends Fragment {
         this.mDownloaderTasks = Collections.synchronizedList(new ArrayList<CatalogDownloaderTask>());
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     public PosterViewAdapter getPosterViewAdapter() {
         return posterViewAdapter;
@@ -72,51 +77,53 @@ public class CatalogFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mCallbacks = (Callbacks) activity;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.catalog, menu);
     }
+
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        this.posterViewAdapter = new PosterViewAdapter(getContext(), filmBundles);
 
-        retrievePages();
+        setHasOptionsMenu(true);
 
-        gridView = (GridView) inflater.inflate(R.layout.video_catalog, container, false);
-        gridView.setAdapter(posterViewAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//        getActivity().setTitle("Movie Project");
+
+        if (rootView == null) {
+            this.posterViewAdapter = new PosterViewAdapter(getContext(), filmBundles);
+
+            retrievePages();
+
+            rootView = gridView = (GridView) inflater.inflate(R.layout.video_catalog, container, false);
+            gridView.setAdapter(posterViewAdapter);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Bundle details = posterViewAdapter.getItem(position);
+                    Bundle details = posterViewAdapter.getItem(position);
 
 
-                if (getActivity().findViewById(R.id.detailedContainer) == null) {
-
-                    Intent intent = new Intent(getActivity(), DetailedActivity.class);
-                    intent.putExtra("details", details);
-                    startActivity(intent);
-
-                } else {
-
-//                    FilmDetailsFragment detailsFragment = new FilmDetailsFragment();
                     DetailedFragment detailsFragment = new DetailedFragment();
                     detailsFragment.setArguments(details);
 
                     FragmentManager fragmentManager = getFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.detailedContainer, detailsFragment);
-//                fragmentTransaction.addToBackStack("catalog");
+
+                    if (getActivity().findViewById(R.id.detailedContainer) == null) {
+                        fragmentTransaction.replace(R.id.content_fragment, detailsFragment, "details");
+                        fragmentTransaction.addToBackStack("catalog");
+                    } else {
+                        fragmentTransaction.replace(R.id.detailedContainer, detailsFragment, "details");
+                    }
                     fragmentTransaction.commit();
 
+
                 }
-
-
-            }
-        });
+            });
+        }
 
         return gridView;
     }

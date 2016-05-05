@@ -3,55 +3,10 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
 
-    <!--<item-->
-        <!--android:id="@+id/action_settings"-->
-        <!--android:orderInCategory="100"-->
-        <!--android:title="@string/action_settings"-->
-        <!--app:showAsAction="never"/>-->
-
-    <item
-        android:id="@+id/menu_sort"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:title="@string/sort"
-        app:showAsAction="always">
-
-        <menu>
-
-            <group android:checkableBehavior="single">
-
-                <item
-                    android:id="@+id/sort_by_reit"
-                    android:title="@string/by_rating"
-                    android:checked="true"/>
-
-                <item
-                    android:id="@+id/sort_by_popularity"
-                    android:title="@string/by_popularity"/>
-
-                <item android:id="@+id/choose_favorites"
-                      android:title="favorites">
-
-    </item>
-
-            </group>
-
-
-        </menu>
-
-
-    </item>
-
     <item
         android:id="@+id/menu_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search"
         app:showAsAction="always"/>
-
-    <item
-        android:id="@+id/menu_share"
-        android:icon="@android:drawable/ic_menu_share"
-        android:title="@string/share"
-        app:showAsAction="always"/>
-
 
 </menu>
