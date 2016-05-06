@@ -126,17 +126,24 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        FragmentManager fm = getSupportFragmentManager();
 
         switch (item.getItemId()) {
 
             case R.id.nav_favorites:
 
                 item.setChecked(true);
-                FragmentManager fm = getSupportFragmentManager();
+
                 fm.beginTransaction().replace(R.id.content_fragment, mFavoritesFragment, "favorites")
                         .addToBackStack("catalog").commit();
 
                 break;
+
+            case R.id.nav_films:
+
+                item.setChecked(true);
+                fm.beginTransaction().replace(R.id.content_fragment, mCatalogFragment, "catalog")
+                        .commit();
 
         }
 

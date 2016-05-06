@@ -31,4 +31,5 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'commons-io:commons-io:2.4'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }

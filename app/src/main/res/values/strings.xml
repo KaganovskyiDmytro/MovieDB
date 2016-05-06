@@ -31,5 +31,7 @@
     <string name="Header">Kaganovskyi Production</string>
     <string name="Subheader">Menu</string>
     <string name="AppImage">AppImage</string>
+    <string name="favorites_share">favoritesShare</string>
+    <string name="favorites_action_settings">favSettings</string>
 
 </resources>

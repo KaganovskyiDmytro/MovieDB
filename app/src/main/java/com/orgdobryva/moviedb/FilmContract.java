@@ -102,6 +102,7 @@ public class FilmContract extends ContentProvider {
                 Log.i("INSERTED", _uri.toString());
                 return _uri;
             }
+
         }
 
         throw new SQLException("Failed to add a record into " + uri);

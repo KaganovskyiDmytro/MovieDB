@@ -23,7 +23,8 @@ public class DatabaseFilms extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE favorites (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " film_id INTEGER," +
                 " film_name TEXT," +
-                " film_image BLOB)");
+//                " film_image BLOB, " +
+                " poster_path TEXT)");
     }
 
     @Override

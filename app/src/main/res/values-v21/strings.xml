@@ -13,5 +13,7 @@
     <string name="filmDefaultOverview">filmOverview</string>
     <string name="film_details_share">filmDetailsShare</string>
     <string name="Header">Kaganovskyi Production</string>
+    <string name="favorites_share">favoritesShare</string>
+    <string name="favorites_action_settings">favSettings</string>
 
 </resources>

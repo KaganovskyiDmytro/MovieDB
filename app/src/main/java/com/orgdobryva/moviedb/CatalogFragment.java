@@ -34,7 +34,6 @@ public class CatalogFragment extends Fragment {
     private List<Bundle> filmBundles;
     private PosterViewAdapter posterViewAdapter;
     private GridView gridView;
-    private Callbacks mCallbacks;
 
 
     public CatalogFragment() {
@@ -59,9 +58,6 @@ public class CatalogFragment extends Fragment {
         return mDownloaderTasks;
     }
 
-    public interface Callbacks {
-        void onFilmSelected(int position);
-    }
 
     public void sortByRating() {
 
@@ -148,11 +144,5 @@ public class CatalogFragment extends Fragment {
             downloaderTask.execute(builtUri.toString());
         }
 
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = null;
     }
 }

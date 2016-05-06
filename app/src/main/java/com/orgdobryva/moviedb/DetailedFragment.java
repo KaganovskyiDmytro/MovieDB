@@ -3,8 +3,6 @@ package com.orgdobryva.moviedb;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,10 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.nio.ByteBuffer;
 
 public class DetailedFragment extends Fragment {
 
@@ -40,6 +34,11 @@ public class DetailedFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_film_details, menu);
+        setCustomTitle("Film Details");
+    }
+
+    public void setCustomTitle(CharSequence customTitle) {
+        getActivity().setTitle(customTitle);
     }
 
     @Nullable
@@ -97,15 +96,16 @@ public class DetailedFragment extends Fragment {
                     ContentValues cv = new ContentValues();
                     cv.put("film_id", details.getInt("id"));
                     cv.put("film_name", details.getString("name"));
+                    cv.put("poster_path", details.getString("poster"));
 
 
-                    Bitmap posterBitmap = mSectionsPagerAdapter.getDetailsFragment().getPosterBitmap();
-
-                    ByteBuffer bb = ByteBuffer.allocate(posterBitmap.getByteCount());
-
-                    posterBitmap.copyPixelsToBuffer(bb);
-
-                    cv.put("film_image", bb.array());
+//                    Bitmap posterBitmap = mSectionsPagerAdapter.getDetailsFragment().getPosterBitmap();
+//
+//                    ByteBuffer bb = ByteBuffer.allocate(posterBitmap.getByteCount());
+//
+//                    posterBitmap.copyPixelsToBuffer(bb);
+//
+//                    cv.put("film_image", bb.array());
 
                     Log.i("CONTENT VALUE", cv.toString());
 
