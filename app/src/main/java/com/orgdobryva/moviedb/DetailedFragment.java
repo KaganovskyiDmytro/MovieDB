@@ -1,6 +1,7 @@
 package com.orgdobryva.moviedb;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,16 +30,24 @@ import java.nio.ByteBuffer;
 
 public class DetailedFragment extends Fragment {
 
+    private final String BASE_URL_ADDRESS = "https://www.themoviedb.org/movie/";
+    private  String buildSharing;
+
     boolean isFavorite = false;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_film_details, menu);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_detailed, container, false);
-
         setHasOptionsMenu(true);
+
+        View view = inflater.inflate(R.layout.activity_detailed, container, false);
 
         final Bundle details = getArguments();
 
@@ -53,6 +63,8 @@ public class DetailedFragment extends Fragment {
 
         Uri build = FilmContract.BASE_CONTENT_URI.buildUpon().appendEncodedPath("" + details.getInt("id")).build();
         Log.i("BUILDED URI", build.toString());
+
+        buildSharing = BASE_URL_ADDRESS.concat(String.valueOf(details.getInt("id")));
 
         Cursor fileCursor = getActivity().getContentResolver().query(build, null, null, null, null);
 
@@ -115,11 +127,23 @@ public class DetailedFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        int id = item.getItemId();
+        switch (item.getItemId()){
 
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.action_settings:
+
+                break;
+
+            case R.id.film_menu_share:
+
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, buildSharing);
+                intent.setType("text/plain");
+                startActivity(Intent.createChooser(intent, buildSharing));
+
+                break;
         }
+
 
         return super.onOptionsItemSelected(item);
     }

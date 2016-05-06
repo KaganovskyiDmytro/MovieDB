@@ -88,7 +88,6 @@ public class CatalogFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-//        getActivity().setTitle("Movie Project");
 
         if (rootView == null) {
             this.posterViewAdapter = new PosterViewAdapter(getContext(), filmBundles);

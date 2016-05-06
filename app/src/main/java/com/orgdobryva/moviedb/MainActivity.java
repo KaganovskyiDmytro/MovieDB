@@ -94,9 +94,6 @@ public class MainActivity extends AppCompatActivity
 
                 break;
 
-            case R.id.menu_share:
-
-                break;
 
             case R.id.sort_by_popularity:
 

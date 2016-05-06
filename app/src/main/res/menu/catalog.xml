@@ -42,11 +42,11 @@
         android:title="@string/search"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/menu_share"
-        android:icon="@android:drawable/ic_menu_share"
-        android:title="@string/share"
-        app:showAsAction="always"/>
+    <!--<item-->
+        <!--android:id="@+id/menu_share"-->
+        <!--android:icon="@android:drawable/ic_menu_share"-->
+        <!--android:title="@string/share"-->
+        <!--app:showAsAction="always"/>-->
 
 
 </menu>
