@@ -15,5 +15,8 @@
     <string name="Header">Kaganovskyi Production</string>
     <string name="favorites_share">favoritesShare</string>
     <string name="favorites_action_settings">favSettings</string>
+    <string name="info">No information available</string>
+    <string name="movie_db">Application</string>
+    <string name="search_film">FilmSearch</string>
 
 </resources>

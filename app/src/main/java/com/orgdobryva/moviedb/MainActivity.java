@@ -1,6 +1,9 @@
 package com.orgdobryva.moviedb;
 
 import android.app.ActionBar;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -8,9 +11,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SearchEvent;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -19,17 +25,19 @@ public class MainActivity extends AppCompatActivity
     private CatalogFragment mCatalogFragment = new CatalogFragment();
     private FavoritesFragment mFavoritesFragment = new FavoritesFragment();
 
-//    private DiskLruCache mDiskLruCache;
-    private final Object mDiskCacheLock = new Object();
-    private boolean mDiskCacheStarting = true;
-    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
-    private static final String DISK_CACHE_SUBDIR = "thumbnails";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.i("SEARCH", "!!! STARTS");
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.i("SEARCH", "!!! PUSH QUERY: " + query);
+        }
 
         if (savedInstanceState == null) {
             Bundle bundle = new Bundle();
@@ -53,8 +61,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
 
-
+    @Override
+    public boolean onSearchRequested() {
+        Log.i("SEARCH", "Request!");
+        return super.onSearchRequested();
     }
 
     @Override
@@ -70,9 +82,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onAttachFragment(android.app.Fragment fragment) {
-
-        Log.i("ONATTACH", "It works");
-
         ActionBar supportActionBar = getActionBar();
         switch (fragment.getTag()) {
             case "favorites":
@@ -90,9 +99,9 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
 
-            case R.id.menu_search:
-
-                break;
+//            case R.id.menu_search:
+//
+//                break;
 
 
             case R.id.sort_by_popularity:
@@ -152,7 +161,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
 
 }

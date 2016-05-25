@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView android:id="@+id/catalogGridView"
 
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:horizontalSpacing="5dp"
-          android:numColumns="auto_fit"
-          android:stretchMode="columnWidth"
-          android:verticalSpacing="10dp"
-    >
+    <GridView android:id="@+id/catalogGridView"
 
-</GridView>
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:horizontalSpacing="5dp"
+              android:numColumns="auto_fit"
+              android:stretchMode="columnWidth"
+              android:verticalSpacing="10dp"
+        >
+
+    </GridView>
+

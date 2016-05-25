@@ -23,17 +23,13 @@ import java.util.List;
 public class PosterViewAdapter extends ArrayAdapter<Bundle> {
 
     private static final String POSTER_PATH = "http://image.tmdb.org/t/p/w320";
-//    private final int MINIMUM_VIEWS = 12;
-//    private int current = 0, total = 0;
 
     Context mContext;
-
 
     public PosterViewAdapter(Context context, List<Bundle> bundles) {
         super(context, 0, bundles);
 
         mContext = context;
-
 
     }
 

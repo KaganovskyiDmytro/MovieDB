@@ -26,15 +26,20 @@ public class FilmContract extends ContentProvider {
 
     // content://com.orgdobryva.moviedb.mydb/favorites
 
+    public static final String THE_MOVIE_DB = "http://api.themoviedb.org/3/search/movie";
+
 
     private SQLiteDatabase db;
     static final String FILMS_TABLE_NAME = "favorites";
+    static final String SEARCH_TABLE = "search";
+
     static final String _ID = "_id";
     static final String _FILM_ID = "film_id";
 
 
     static final int FILMS = 1;
     static final int FILM_ID = 2;
+    static final int SEARCH_ID = 3;
 
     static final UriMatcher uriMatcher;
 
@@ -42,6 +47,7 @@ public class FilmContract extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, FILMS_TABLE_NAME, FILMS);
         uriMatcher.addURI(PROVIDER_NAME, FILMS_TABLE_NAME + "/#", FILM_ID);
+
     }
 
     DatabaseFilms dbHelper;
